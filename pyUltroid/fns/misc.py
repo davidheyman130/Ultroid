@@ -150,6 +150,33 @@ async def google_search(query):
 # ----------------------------------------------------
 
 
+async def yt_playlistScrap(query):
+    headers = {
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "User-Agent": choice(some_random_headers),
+    }
+    con = await async_searcher(query, headers=headers)
+    soup = BeautifulSoup(con, "html.parser")
+    result = []
+    pdata = soup.find_all("a", href=re.compile("url="))
+    for data in pdata:
+        if not data.find("div"):
+            continue
+        try:
+            result.append(
+                {
+                    "title": data.find("div").text
+                }
+            )
+        except BaseException as er:
+            LOGS.exception(er)
+    return result
+
+
+# ----------------------------------------------------
+
+
 async def allcmds(event, telegraph):
     txt = ""
     for z in LIST.keys():
